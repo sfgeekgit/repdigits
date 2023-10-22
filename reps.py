@@ -1,6 +1,6 @@
 
 # function to return a list of all repdigits up to a given length
-def get_repdigits(max_len = 6, use_zero=True):
+def get_repdigits(max_len = 6, use_zero=False):
     repdigits = []
     if use_zero:
         repdigits = [0]
