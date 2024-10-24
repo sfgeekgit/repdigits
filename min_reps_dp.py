@@ -63,7 +63,7 @@ for target in range(3333):
     if need == seeking:
         print("\n Term Found! \n", target)
         used = res[1]
-        print (f"{target} \tis the sum of {need} repdigits {used}")
+        print (f"{target} \tis the sum of no less than {need} repdigits {used}")
         seq_out.append(target)
         print(seq_out)
         seeking += 1
