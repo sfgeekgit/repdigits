@@ -1,5 +1,6 @@
 from reps import get_repdigits
 import math
+from array import array
 
 # calculate OEIS A336748
 # https://oeis.org/A336748
@@ -41,15 +42,15 @@ def calc_dp_array(ceiling, keep_terms = True, pre_calc_dp=None, pre_calc_parents
         len_parent = ceiling + 1
         if pre_calc_parents:
             if len_parent <= len(pre_calc_parents):
-                parent = pre_calc_parents[:len_parent]
+                parent = array('I', pre_calc_parents[:len_parent])
             else:
-                parent = pre_calc_parents[:] + [1] * (len_parent - len(pre_calc_parents))
+                parent = array('I', pre_calc_parents[:] + [1] * (len_parent - len(pre_calc_parents)))
         else:
-            parent = [1] * len_parent
+            parent = array('I', [1] * len_parent)
 
     else:
         save_parent = False
-        parent=[]
+        parent = array('I', [])
 
     if ceiling == 0:  
         repdigits = get_repdigits(1)
@@ -62,13 +63,12 @@ def calc_dp_array(ceiling, keep_terms = True, pre_calc_dp=None, pre_calc_parents
     ##
     # the dp array may have been pre calculated up to a prior point
     if pre_calc_dp:
-        if ceiling +1 <= len(pre_calc_dp):
-            dp_reps_needed = pre_calc_dp[:ceiling+1]
+        if ceiling + 1 <= len(pre_calc_dp):
+            dp_reps_needed = array('I', pre_calc_dp[:ceiling+1])
         else:
-            dp_reps_needed = pre_calc_dp[:] + list(range(len(pre_calc_dp), ceiling+1))            
+            dp_reps_needed = array('I', pre_calc_dp[:] + list(range(len(pre_calc_dp), ceiling+1)))
     else:
-        dp_reps_needed = list(range(ceiling+1)) # start with just the digit "1" Each int will will need that many ones if only using "1"
-
+        dp_reps_needed = array('I', range(ceiling+1)) # start with just the digit "1" Each int will will need that many ones if only using "1"
 
 
         
@@ -123,12 +123,27 @@ def calc_sequence(ceiling, dp_reps_needed=None, parent=None, get_terms=True):
 #res = calc_sequence(320, reps)
 #res = calc_sequence(3332216, reps)
 #ceiling = 333
-ceiling =         32_218
+#ceiling =         32_218
 #ceiling =       332_217  # known 7th term
 #ceiling =     3_332_216  # known 8th term
+ceiling =     4_500_000  # known 8th term
 #ceiling =    33_332_215  # known 9th
 #ceiling =   333_332_214  # known 10th term
 #ceiling = 3_333_332_213  # known 11th term
+
+
+#
+#ceiling =     2_400_000
+#ceiling = 1_333_332_213
+#ceiling = 2_333_332_213
+#ceiling = 400
+#dp, reps_used = calc_dp_array(ceiling, keep_terms=False)
+
+#outfile = f"dp_array_{ceiling}.py"
+#with open(outfile, "w") as f:
+#    f.write(f"dp = {dp}\n")
+#quit()
+
 
 
 sequence, reps_used = calc_sequence(ceiling)
