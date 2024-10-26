@@ -1,6 +1,13 @@
 from reps import get_repdigits
 import math
 
+# calculate OEIS A336748
+# https://oeis.org/A336748
+# 1, 10, 21, 320, 2219, 32218, 332217, 3332216, 33332215, 333332214, 3333332213 
+# next term will require thoughtfull codeing and/or massive ram
+# currently, even reaching the 11th known term exceeds the RAM on this (small) server
+
+
 
 # dynamic programing builds up the entire array from 0..ceiling
 # builds array of how many rep digits are needed for EVERY number below
@@ -30,9 +37,15 @@ def calc_dp_array(ceiling, keep_terms = True, pre_calc_dp=None, pre_calc_parents
 
 
     if keep_terms:  # False runs just a little faster, but uses less memory.
-        # to do, use pre_calc_parents
         save_parent = True
-        parent = [1] * (ceiling + 1)
+        len_parent = ceiling + 1
+        if pre_calc_parents:
+            if len_parent <= len(pre_calc_parents):
+                parent = pre_calc_parents[:len_parent]
+            else:
+                parent = pre_calc_parents[:] + [1] * (len_parent - len(pre_calc_parents))
+        else:
+            parent = [1] * len_parent
 
     else:
         save_parent = False
