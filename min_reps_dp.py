@@ -8,7 +8,8 @@ import math
 # should not be re-invoked for every sequential number, that will re-do most of the work every time.
 
 
-def calc_dp_array(ceiling, keep_terms = True, dp=None):
+def calc_dp_array(ceiling, keep_terms = True, pre_calc_dp=None, pre_calc_parents=None):
+
     
     # this uses dynamic programing dp to store values and build up
     # it calclulates how many are needed for 0, then 1, then 2, etc.
@@ -27,29 +28,38 @@ def calc_dp_array(ceiling, keep_terms = True, dp=None):
     # parent is the LAST repdigit used,
     # so if parent[15] == 11 then this algo used an 11 to make 15, and 15-11=4 so check parent[4] too see the next one
 
-    if keep_terms:
+
+    if keep_terms:  # False runs just a little faster, but uses less memory.
+        # to do, use pre_calc_parents
         save_parent = True
         parent = [1] * (ceiling + 1)
-        # tried running without parent to see if it's faster.
-        # Answer, a little faster, but not much. Should save memory.
-
 
     else:
         save_parent = False
         parent=[]
 
-    if ceiling == 0:  # Special case for 0
-        max_len = 1
+    if ceiling == 0:  
+        repdigits = get_repdigits(1)
     else:
         max_len = math.floor(math.log10(ceiling)) + 1
-    repdigits = get_repdigits(max_len)
+        repdigits = get_repdigits(max_len)
+
+
         
     ##
-    dp_reps_needed = list(range(ceiling+1)) # start with just the digit "1" Each int will will need that many ones if only using "1"
+    # the dp array may have been pre calculated up to a prior point
+    if pre_calc_dp:
+        if ceiling +1 <= len(pre_calc_dp):
+            dp_reps_needed = pre_calc_dp[:ceiling+1]
+        else:
+            dp_reps_needed = pre_calc_dp[:] + list(range(len(pre_calc_dp), ceiling+1))            
+    else:
+        dp_reps_needed = list(range(ceiling+1)) # start with just the digit "1" Each int will will need that many ones if only using "1"
 
 
 
-    
+        
+    ## Main loop!
     for repdigit in repdigits[1:]:  # already init dp for "1"
         for i in range(repdigit, ceiling + 1):
             #if dp_reps_needed[i] > dp_reps_needed[i - repdigit] + 1:
@@ -68,7 +78,7 @@ def calc_sequence(ceiling, dp_reps_needed=None, parent=None, get_terms=True):
 
         
     if dp_reps_needed is None or (get_terms and parent is None):        
-        dp_reps_needed, parent = calc_dp_array(ceiling, dp=[123])
+        dp_reps_needed, parent = calc_dp_array(ceiling, get_terms)
 
 
 
@@ -81,7 +91,7 @@ def calc_sequence(ceiling, dp_reps_needed=None, parent=None, get_terms=True):
         if cnt > term_num:
             sequence.append(i)
             term_num += 1
-    print (f"SEQUENCE IS: {sequence}")
+    #print (f"SEQUENCE IS: {sequence}")
     reps_used = [] 
 
     for term in sequence:
@@ -108,27 +118,12 @@ ceiling =         32_218
 #ceiling = 3_333_332_213  # known 11th term
 
 
-#ceiling = 25
-dp, last_terms = calc_dp_array(ceiling)
-#print (dp)
-#print(last_terms)
-#quit()
-
-
-###def calc_sequence(ceiling, dp_reps_needed=None, parent=None, get_terms=True):
-
-sequence, reps_used = calc_sequence(ceiling, dp, last_terms)
 sequence, reps_used = calc_sequence(ceiling)
-print(f"{sequence=}")
-
-
-
-
+print (f"SEQUENCE IS: {sequence}")
 for i, term in enumerate(sequence):
     ru = reps_used[i]
     ru = ru[::-1]
-    print (f"{i+1}:  {term}    \t{ru}")
-
+    print (f"{i+1}: {term}    \t{ru}")
 
 
 
