@@ -69,22 +69,31 @@ def calc_dp_array(ceiling, keep_terms = True, pre_calc_dp=None, pre_calc_parents
             dp_reps_needed = array('I', pre_calc_dp[:] + list(range(len(pre_calc_dp), ceiling+1)))
     else:
         dp_reps_needed = array('I', range(ceiling+1)) # start with just the digit "1" Each int will will need that many ones if only using "1"
+        #dp_reps_needed = array('I', [0])
 
 
-        
     ## Main loop!
-    for repdigit in repdigits[1:]:  # already init dp for "1"
+    '''
+    #for repdigit in repdigits[1:]:  # already init dp for "1"
+    for repdigit in repdigits:
         for i in range(repdigit, ceiling + 1):
-            #if dp_reps_needed[i] > dp_reps_needed[i - repdigit] + 1:
-            if dp_reps_needed[i] >= dp_reps_needed[i - repdigit] + 1: # greedy gives nicer numbers.
-                dp_reps_needed[i] = dp_reps_needed[i - repdigit] + 1
-                if save_parent:
-                    parent[i] = repdigit
-            if i % 2_222_000 == 0:
-                print(f"{i=} \t{repdigit=} {ceiling=} {dp_reps_needed[i]=}")
+    '''
+    for i in range(ceiling +1):
 
-                
-    return dp_reps_needed, parent
+        for repdigit in repdigits:
+            if repdigit <= i:
+                #if dp_reps_needed[i] > dp_reps_needed[i - repdigit] + 1:
+                if dp_reps_needed[i] >= dp_reps_needed[i - repdigit] + 1: # greedy gives nicer numbers.
+                    dp_reps_needed[i] = dp_reps_needed[i - repdigit] + 1
+                    if save_parent:
+                        parent[i] = repdigit
+                        if i % 2_222_000 == 0:
+                            print(f"{i=} \t{repdigit=} {ceiling=} {dp_reps_needed[i]=}")
+
+
+            # at this point could check here for new hig val, new term in seq
+            
+    return dp_reps_needed[:ceiling], parent[:ceiling]
 
     
 def calc_sequence(ceiling, dp_reps_needed=None, parent=None, get_terms=True):
@@ -124,9 +133,9 @@ def calc_sequence(ceiling, dp_reps_needed=None, parent=None, get_terms=True):
 #res = calc_sequence(3332216, reps)
 #ceiling = 333
 #ceiling =         32_218
+ceiling =         34_000
 #ceiling =       332_217  # known 7th term
 #ceiling =     3_332_216  # known 8th term
-ceiling =     4_500_000  # known 8th term
 #ceiling =    33_332_215  # known 9th
 #ceiling =   333_332_214  # known 10th term
 #ceiling = 3_333_332_213  # known 11th term
